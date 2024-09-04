@@ -1,0 +1,35 @@
+{
+  "name": "tailrunner",
+  "version": "1.0.0",
+  "description": "TailRunner is a user-friendly marketplace app designed to connect pet owners with passionate dog walkers and runners in their local area. Whether you need someone to give your furry friend a quick stroll around the block or an energetic run to burn off extra energy, TailRunner offers a range of services to fit every dog's needs. The app features easy scheduling, secure payment options, and user reviews to ensure your pet is in good hands. With TailRunner, you can rest assured that your dog is staying active and happy, all while supporting trusted walkers and runners in your community.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"node index.js",
+    "start-dev": "nodemon -r dotenv/config index.js"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EvanGudmestad/TailRunner.git"
+  },
+  "keywords": [
+    "Best",
+    "Dog",
+    "Walking",
+    "App",
+    "Ever!"
+  ],
+  "author": "Evan Gudmestad and Class",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EvanGudmestad/TailRunner/issues"
+  },
+  "homepage": "https://github.com/EvanGudmestad/TailRunner#readme",
+  "dependencies": {
+    "debug": "^4.3.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
