@@ -8,8 +8,9 @@ const debugIndex = debug('app:Index');
 
 import { dogOwnerRouter } from './routes/api/dogOwner.js';
 
+
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies to req.body
 
@@ -22,4 +23,4 @@ app.listen(port, () => {
   debugIndex(`Example app listening on port http://localhost:${port}`);
 });
 
-app.use('/api/dogOwners', dogOwnerRouter);
+app.use('/api/pet-owners', dogOwnerRouter);

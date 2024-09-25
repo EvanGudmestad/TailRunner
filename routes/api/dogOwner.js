@@ -1,64 +1,103 @@
 import express from 'express';
+import { GetAllPetOwners, GetPetOwnerById, addPetOwner, updatePetOwner, deletePetOwner } from '../../database.js';
+
+import debug from 'debug';
+const debugDogOwner = debug('app:DogOwner');
 
 const router = express.Router();
 
-const dogOwners = [
-  {id:1,firstName:'John', lastName:'Doe', dogs:['Rex', 'Spot']},
-  {id:2,firstName:'Jane', lastName:'Smith', dogs:['Rover']}
-]
+//Get all Pet Owners
+router.get('', (req, res) => {
+  GetAllPetOwners().then((owners)=>{
+    res.status(200).json(owners);
+  }).catch((error)=>{
+    res.status(500).send(error);
+})});
 
-router.get('/list', (req, res) => {
-  res.status(200).send(dogOwners);
-});
-
-router.get('/:id', (req, res) => {
-  const dogOwner = dogOwners.find(dogOwner => dogOwner.id === parseInt(req.params.id));
-  if (!dogOwner) res.status(404).send('The dog owner with the given ID was not found');
-  res.status(200).send(dogOwner);
-});
-
-router.post('/add', (req,res)=>{
-  const dogOwner = req.body;
-  if(!dogOwner.firstName || !dogOwner.lastName || !dogOwner.dogs){
-    res.status('400').send('Please provide a first name, last name, and at least one dog');
-  }else{
-    dogOwner.id = dogOwners.length + 1;
-    dogOwners.push(dogOwner);
-    res.status(200).send(`Dog owner successfully added`);
-  }
-});
-
-router.put('/update/:id', (req,res)=>{
- const dogOwner = dogOwners.find(dogOwner => dogOwner.id === parseInt(req.params.id));
-  if(!dogOwner){
-      res.status(404).send('The dog owner with the given ID was not found');
+//Get Pet Owner by ID
+router.get('/:id',async (req, res) => {
+ const id = req.params.id;
+  try{
+    const owner = await GetPetOwnerById(id);
+    debugDogOwner(JSON.stringify(owner));
+    if(JSON.stringify(owner) === '{}' || owner === null){
+      res.status(404).send('Owner not found');
+    }else{
+      res.status(200).json(owner);
     }
+  }catch(error){
+    res.status(500).send(error);
+  }});
+
+//Add Pet Owner
+router.post('', async (req,res)=>{
+  const owner = req.body;
+  if(!owner || !owner.firstName || !owner.lastName || !owner.dogs){
+    res.status(400).json({message:'Invalid request'});
+  }
   else{
-    //const updatedDogOwner = {...dogOwner, ...req.body}; // Merge the two objects
-    const updatedDogOwner = {...dogOwner};
-  
-    if(req.body.firstName) updatedDogOwner.firstName = req.body.firstName;
-    if(req.body.lastName) updatedDogOwner.lastName = req.body.lastName;
-    if(req.body.dogs && dogOwner.dogs){
-      req.body.dogs.forEach(dog => {
-        updatedDogOwner.dogs.push(dog);  
-      });
-      
+    try{
+      const result = await addPetOwner(owner);
+      res.status(201).json({message:'New Owner Added'});
+    }catch(error){
+      res.status(500).send(error);
     }
-    dogOwners[dogOwners.indexOf(dogOwner)] = updatedDogOwner;
-    res.status(200).send(`Dog owner successfully updated`);
   }
 });
 
-router.delete('/delete/:id', (req,res)=>{
-  const dogOwner = dogOwners.find(dogOwner => dogOwner.id === parseInt(req.params.id));
-  if(!dogOwner){
-    res.status(404).send('The dog owner with the given ID was not found');
+//Update Pet Owner
+router.patch('/:id', async (req,res)=>{
+  const id = req.params.id;
+  //Get the Current owner out of the DB
+  const currentOwner = await GetPetOwnerById(id);
+
+  if(JSON.stringify(currentOwner) === '{}' || currentOwner === null){
+    res.status(404).send('Owner not found');
   }else{
-    dogOwners.splice(dogOwners.indexOf(dogOwner),1);
-    res.status(200).send(`Dog owner successfully deleted`);
+    const updatedOwner = req.body;
+
+    if(updatedOwner.dogs){
+      //if dogs is an array
+      if(Array.isArray(updatedOwner.dogs)){
+        updatedOwner.dogs.forEach((dog)=>{
+          currentOwner.dogs.push(dog);
+        });
+      }else{
+        //if dogs is a string
+        currentOwner.dogs.push(updatedOwner.dogs);
+      }      
+    }
+
+    if(updatedOwner.firstName){
+      currentOwner.firstName = updatedOwner.firstName;
+    }
+
+    if(updatedOwner.lastName){
+      currentOwner.lastName = updatedOwner.lastName;
+    }
+    
+    //Update the owner in the DB
+    try{
+      const result = await updatePetOwner(currentOwner);
+      res.status(200).json({message:'Owner Updated'});
+    }catch(error){
+      res.status(500).send(error);
+    }
   }
 });
+
+router.delete('/:id', async (req,res)=>{
+  const id = req.params.id;
+  try{
+    const result = await deletePetOwner(id);
+    if(result.deletedCount === 0){
+      res.status(404).send('Owner not found');
+    }else{
+      res.status(200).json({message:'Owner Deleted'});
+    }
+  }catch(error){
+    res.status(500).send(error);
+}});
 
 
 export {router as dogOwnerRouter};
