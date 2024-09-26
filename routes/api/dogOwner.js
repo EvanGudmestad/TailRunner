@@ -50,12 +50,12 @@ router.patch('/:id', async (req,res)=>{
   const id = req.params.id;
   //Get the Current owner out of the DB
   const currentOwner = await GetPetOwnerById(id);
-
+  currentOwner.dogs = [];
   if(JSON.stringify(currentOwner) === '{}' || currentOwner === null){
     res.status(404).send('Owner not found');
   }else{
     const updatedOwner = req.body;
-
+    debugDogOwner(JSON.stringify(updatedOwner));
     if(updatedOwner.dogs){
       //if dogs is an array
       if(Array.isArray(updatedOwner.dogs)){
@@ -86,6 +86,7 @@ router.patch('/:id', async (req,res)=>{
   }
 });
 
+//Delete Pet Owner
 router.delete('/:id', async (req,res)=>{
   const id = req.params.id;
   try{
