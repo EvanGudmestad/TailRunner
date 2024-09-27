@@ -13,17 +13,17 @@ const PetOwnerForm = ({currentOwner, onSave}) => {
 
   useEffect(() => {
     if(currentOwner){
-      setFirstName(currentOwner.firstName);
-      setLastName(currentOwner.lastName);
-      for(let i = 0; i < currentOwner.dogs.length; i++){
-        if(i === 0){
-          setDog1(currentOwner.dogs[i]);
-        }else if(i === 1){
-          setDog2(currentOwner.dogs[i]);
-        }else if(i === 2){
-          setDog3(currentOwner.dogs[i]);
-        }
-      }
+      setFirstName(currentOwner.firstName || "");
+      setLastName(currentOwner.lastName || "");
+      setDog1(currentOwner.dogs[0] || '');
+      setDog2(currentOwner.dogs[1] || '');
+      setDog3(currentOwner.dogs[2] || '');
+    }else{
+      setFirstName('');
+      setLastName('');
+      setDog1('');
+      setDog2('');
+      setDog3('');
     }
   }, [currentOwner]);
  
@@ -49,11 +49,7 @@ const PetOwnerForm = ({currentOwner, onSave}) => {
      
       try{
        const response = await axios.post('http://localhost:2024/api/pet-owners', {firstName, lastName, dogs});
-        setFirstName('');
-        setLastName('');
-        setDog1('');
-        setDog2('');
-        setDog3('');
+       
         onSave(response.data)
       }catch(error){
         console.log(error);
