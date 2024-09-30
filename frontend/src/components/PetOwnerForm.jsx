@@ -1,9 +1,7 @@
 import React, {useState,useEffect} from 'react';
 import axios from 'axios';
 
-const PetOwnerForm = ({currentOwner, onSave}) => {
-
-
+const PetOwnerForm = ({currentOwner, handleSave, setRefresh}) => {
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -39,18 +37,24 @@ const PetOwnerForm = ({currentOwner, onSave}) => {
     if(dog3){
       dogs.push(dog3);
     }
-    console.log(`dogs: ${dogs}`);
     if(currentOwner){
       //update
-     const response = await axios.patch(`http://localhost:2024/api/pet-owners/${currentOwner._id}`, {firstName, lastName, dogs});
-      onSave(response.data);
+     await axios.patch(`http://localhost:2024/api/pet-owners/${currentOwner._id}`, {firstName, lastName, dogs});
+    
+     handleSave();
+      
     }else{
       //create
-     
       try{
-       const response = await axios.post('http://localhost:2024/api/pet-owners', {firstName, lastName, dogs});
-       
-        onSave(response.data)
+       await axios.post('http://localhost:2024/api/pet-owners', {firstName, lastName, dogs});
+        handleSave();
+         // Clear the form after successful creation
+         setFirstName('');
+         setLastName('');
+         setDog1('');
+         setDog2('');
+         setDog3('');
+          handleSave();
       }catch(error){
         console.log(error);
       }
@@ -60,7 +64,7 @@ const PetOwnerForm = ({currentOwner, onSave}) => {
   
   return(
  <div className='container'>
-      <h1>Pet Owner Form</h1>
+      <h1>{currentOwner? "Update " : "Add "}Pet Owner</h1>
       <form onSubmit={handleSubmit}>
         <div className='mb-3'>
           <label htmlFor='firstName' className='form-label'>First Name</label>
