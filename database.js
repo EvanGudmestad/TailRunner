@@ -48,6 +48,7 @@ async function addPetOwner(owner){
 
 async function updatePetOwner(updatedOwner){
   const db = await connectToDatabase();
+  debugDb(`Updated Owner: ${JSON.stringify(updatedOwner)}`);
   const dbResult = await db.collection('PetOwners').updateOne({_id: new ObjectId(updatedOwner._id)}, {$set: updatedOwner});
   return dbResult;
 }
@@ -58,6 +59,21 @@ async function deletePetOwner(id){
   return dbResult;
 } 
 
+
+async function getOrderById(id){
+  const db = await connectToDatabase();
+   // debugDb(`ID: ${id}`);
+    const order = await db.collection('Orders').findOne({_id: new ObjectId(id)});
+   // debugDb(`Order: ${JSON.stringify(order)}`);
+    return order;
+}
+
+async function addOrder(order){
+  const db = await connectToDatabase();
+    const dbResult = await db.collection('Orders').insertOne(order);
+    return dbResult;
+}
+
 ping();
 
-export{GetAllPetOwners, GetPetOwnerById, addPetOwner, updatePetOwner, deletePetOwner};
+export{GetAllPetOwners, GetPetOwnerById, addPetOwner, updatePetOwner, deletePetOwner, addOrder, getOrderById};

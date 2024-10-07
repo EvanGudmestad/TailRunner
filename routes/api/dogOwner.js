@@ -55,7 +55,7 @@ router.patch('/:id', async (req,res)=>{
     res.status(404).send('Owner not found');
   }else{
     const updatedOwner = req.body;
-    debugDogOwner(JSON.stringify(updatedOwner));
+    //debugDogOwner(JSON.stringify(updatedOwner));
     if(updatedOwner.dogs){
       //if dogs is an array
       if(Array.isArray(updatedOwner.dogs)){

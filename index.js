@@ -7,6 +7,7 @@ import debug from 'debug';
 const debugIndex = debug('app:Index');
 
 import { dogOwnerRouter } from './routes/api/dogOwner.js';
+import { orderRouter } from './routes/api/order.js';
 
 
 const app = express();
@@ -26,3 +27,4 @@ app.listen(port, () => {
 });
 
 app.use('/api/pet-owners', dogOwnerRouter);
+app.use('/api/orders', orderRouter);
