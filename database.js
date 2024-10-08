@@ -30,14 +30,10 @@ async function GetAllPetOwners(){
 
 async function GetPetOwnerById(id){
   const db = await connectToDatabase();
-  if(id.length !== 24){
-    debugDb(`Invalid ID: ${id}`);
-    return {};
-  }else{
-    const user = await db.collection('PetOwners').findOne({_id: new ObjectId(id)});
-    debugDb(`User: ${JSON.stringify(user)}`);
+    const user = await db.collection('PetOwners').findOne({_id: id});
+    //debugDb(`User: ${JSON.stringify(user)}`);
     return user;
-  }
+  
 }
 
 async function addPetOwner(owner){

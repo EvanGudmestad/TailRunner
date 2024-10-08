@@ -1,6 +1,6 @@
 import express from 'express';
 import { GetAllPetOwners, GetPetOwnerById, addPetOwner, updatePetOwner, deletePetOwner } from '../../database.js';
-
+import { validId } from '../../middleware/validId.js';
 import debug from 'debug';
 const debugDogOwner = debug('app:DogOwner');
 
@@ -99,6 +99,33 @@ router.delete('/:id', async (req,res)=>{
   }catch(error){
     res.status(500).send(error);
 }});
+
+//Add Item to Wish List
+router.post('/:userId/wishList/:wishListId', validId('userId'), validId('wishListId'), async (req,res)=>{
+ 
+  const userId = req.userId;
+  const wishListId = req.wishListId;
+  const {item} = req.body;
+  try{
+    const currentOwner = await GetPetOwnerById(userId);
+    //debugDogOwner(JSON.stringify(currentOwner));
+    if(JSON.stringify(currentOwner) === '{}' || currentOwner === null){
+      res.status(404).send('Owner not found');
+    }else{
+      currentOwner.wishList.find(item => item._id.equals(wishListId)).items.push(item);
+      const result = await updatePetOwner(currentOwner);
+      res.status(200).json({message:'Wish List Updated'});
+    }
+  }catch(error){
+    res.status(500).send(error);
+  }
+
+});
+
+//Get Wish List
+router.get('/:userId/wishList', async (req,res)=>{
+
+});
 
 
 export {router as dogOwnerRouter};
