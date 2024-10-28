@@ -1,14 +1,21 @@
 import express from 'express';
-import { GetAllPetOwners, GetPetOwnerById, addPetOwner, updatePetOwner, deletePetOwner } from '../../database.js';
+import { GetAllPetOwners, GetPetOwnerById, addPetOwner, updatePetOwner, deletePetOwner, saveAuditLog } from '../../database.js';
 import { validId } from '../../middleware/validId.js';
+
+import { isLoggedIn } from '@merlin4/express-auth';
+
 import debug from 'debug';
+
 const debugDogOwner = debug('app:DogOwner');
 
 const router = express.Router();
 
 //Get all Pet Owners
-router.get('', (req, res) => {
+router.get('', isLoggedIn(), (req, res) => {
   GetAllPetOwners().then((owners)=>{
+    if(req.auth){
+      debugDogOwner(req.auth.email);
+    }
     res.status(200).json(owners);
   }).catch((error)=>{
     res.status(500).send(error);
@@ -30,7 +37,7 @@ router.get('/:id',async (req, res) => {
   }});
 
 //Add Pet Owner
-router.post('', async (req,res)=>{
+router.post('', isLoggedIn(), async (req,res)=>{
   const owner = req.body;
   if(!owner || !owner.firstName || !owner.lastName || !owner.dogs){
     res.status(400).json({message:'Invalid request'});
@@ -38,6 +45,13 @@ router.post('', async (req,res)=>{
   else{
     try{
       const result = await addPetOwner(owner);
+      const log = {
+        timestamp: new Date(),
+        operation: 'Add',
+        collection: 'PetOwners',
+        authorizedBy: req.auth.email,
+      }
+      await saveAuditLog(log);
       res.status(201).json({message:'New Owner Added'});
     }catch(error){
       res.status(500).send(error);
@@ -46,10 +60,13 @@ router.post('', async (req,res)=>{
 });
 
 //Update Pet Owner
-router.patch('/:id', async (req,res)=>{
-  const id = req.params.id;
+router.patch('/:id', validId('id'), async (req,res)=>{
+  const id = req.id;
+  //debugDogOwner(id);
+  //debugDogOwner(JSON.stringify(req.body));
   //Get the Current owner out of the DB
   const currentOwner = await GetPetOwnerById(id);
+  debugDogOwner(JSON.stringify(currentOwner));
   currentOwner.dogs = [];
   if(JSON.stringify(currentOwner) === '{}' || currentOwner === null){
     res.status(404).send('Owner not found');
@@ -79,6 +96,14 @@ router.patch('/:id', async (req,res)=>{
     //Update the owner in the DB
     try{
       const result = await updatePetOwner(currentOwner);
+      const log = {
+        timestamp: new Date(),
+        operation: 'Edit',
+        change: JSON.stringify(updatedOwner),
+        collection: 'PetOwners',
+        authorizedBy: req.auth.email,
+      }
+      await saveAuditLog(log);
       res.status(200).json({message:'Owner Updated'});
     }catch(error){
       res.status(500).send(error);
