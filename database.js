@@ -87,7 +87,13 @@ async function saveAuditLog(log){
   return dbResult;
 }
 
+async function findRoleByName(roleName){
+  const db = await connectToDatabase();
+  const role = await db.collection('Role').findOne({name: roleName});
+  return role;
+}
+
 ping();
 
 export{GetAllPetOwners, GetPetOwnerById, addPetOwner,
-  getUserByEmail, updatePetOwner, deletePetOwner, addOrder, getOrderById, registerUser, saveAuditLog};
+  getUserByEmail, updatePetOwner, deletePetOwner, addOrder, getOrderById, registerUser, saveAuditLog, findRoleByName};

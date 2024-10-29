@@ -8,9 +8,11 @@ import bcrypt from 'bcrypt';
 
 import { validBody } from '../../middleware/validBody.js';
 
-import { registerUser, getUserByEmail } from '../../database.js';
+import { registerUser, getUserByEmail, findRoleByName } from '../../database.js';
 
 import jwt from 'jsonwebtoken';
+
+import { fetchRoles, mergePermissions } from '@merlin4/express-auth';
 
 const router = express.Router();
 
@@ -21,7 +23,14 @@ const userSchema = Joi.object({
 });
 
 async function issueAuthToken(user){
-  const token = jwt.sign({_id:user._id,email: user.email}, process.env.JWT_SECRET, {expiresIn: '1h'});
+ 
+
+  const roles = await fetchRoles(user, role => findRoleByName(role));
+
+  const permissions = mergePermissions(user, roles);
+ // debugUser(permissions);
+  const token = jwt.sign({_id:user._id,email: user.email, role:user.role, permissions:permissions}, process.env.JWT_SECRET, {expiresIn: '1h'});
+  debugUser(token);
   return token;
 }
 
@@ -48,7 +57,7 @@ router.post('/register', validBody(userSchema),async (req, res) => {
   }else{
 
   user.password = await bcrypt.hash(user.password, 10);
-
+  user.role = ['customer'];  
   const insertUserResult = await registerUser(user);
 
   if(insertUserResult.acknowledged){

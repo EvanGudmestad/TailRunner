@@ -2,7 +2,7 @@ import express from 'express';
 import { GetAllPetOwners, GetPetOwnerById, addPetOwner, updatePetOwner, deletePetOwner, saveAuditLog } from '../../database.js';
 import { validId } from '../../middleware/validId.js';
 
-import { isLoggedIn } from '@merlin4/express-auth';
+import { isLoggedIn, hasPermission } from '@merlin4/express-auth';
 
 import debug from 'debug';
 
@@ -11,7 +11,7 @@ const debugDogOwner = debug('app:DogOwner');
 const router = express.Router();
 
 //Get all Pet Owners
-router.get('', isLoggedIn(), (req, res) => {
+router.get('',hasPermission('canViewData'), hasPermission('canBlaBla'), (req, res) => {
   GetAllPetOwners().then((owners)=>{
     if(req.auth){
       debugDogOwner(req.auth.email);
