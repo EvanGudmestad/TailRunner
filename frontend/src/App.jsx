@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import {PetOwnerList} from './components/PetOwnerList.jsx';
 import { PetOwnerForm } from './components/PetOwnerForm.jsx';
+import Header from './components/Header.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.js';
 
@@ -48,7 +49,7 @@ function App() {
 
   return (
     <>
-
+      <Header />
      <PetOwnerList handleEdit={handleEdit} petOwners={petOwners} handleDelete={handleDelete} />
      <PetOwnerForm currentOwner={currentOwner} handleSave={handleSave} setRefresh={() => setRefresh(refresh+1)}/>
     </>
