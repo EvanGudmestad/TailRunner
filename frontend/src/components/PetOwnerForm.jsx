@@ -65,7 +65,7 @@ const PetOwnerForm = ({currentOwner, handleSave, setRefresh}) => {
   
   return(
  <div className='container'>
-      <h1>{currentOwner? "Update " : "Add "}Pet Ownerssss</h1>
+      <h1>{currentOwner? "Update " : "Add "}Pet Owners</h1>
       <form onSubmit={handleSubmit}>
         <div className='mb-3'>
           <label htmlFor='firstName' className='form-label'>First Name</label>

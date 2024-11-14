@@ -7,7 +7,7 @@ const Header = () => {
 
       <a href="index.html" className="logo d-flex align-items-center me-auto">
         <img src="assets/logo-D4qARBnY.png" alt="Broken Logo" />
-        <h1 className="sitename">QuickStart </h1>
+        <h1 className="sitename">QuickStart    </h1>
       </a>
 
       <nav id="navmenu" className="navmenu">

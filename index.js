@@ -18,7 +18,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies to req.body
 app.use(express.json()); // Parse JSON bodies to req.body
-app.use(express.static('frontend/dist'));
+app.use(express.static('frontend/dist')); // Serve the Next.js frontend
 
 app.use(cookieParser());
 

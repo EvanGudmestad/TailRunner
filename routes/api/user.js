@@ -30,7 +30,7 @@ async function issueAuthToken(user){
   const permissions = mergePermissions(user, roles);
  // debugUser(permissions);
   const token = jwt.sign({_id:user._id,email: user.email, role:user.role, permissions:permissions}, process.env.JWT_SECRET, {expiresIn: '1h'});
-  debugUser(token);
+  //debugUser(token);
   return token;
 }
 
@@ -80,11 +80,11 @@ router.post('/login', validBody(userSchema), async (req, res) => {
   try{
       const existingUser = await getUserByEmail(user.email);
       if(!existingUser){
-        return res.status(400).json({message: 'Invalid email or password'});
+        return res.status(200).json({message: 'Invalid email or password'});
       }
       const passwordMatch = await bcrypt.compare(user.password, existingUser.password);
       if(!passwordMatch){
-        return res.status(400).json({message: 'Invalid email or password'});
+        return res.status(200).json({message: 'Invalid email or password'});
       }
       const jwtToken = await issueAuthToken(existingUser);
       await issueAuthCookie(res, jwtToken);
