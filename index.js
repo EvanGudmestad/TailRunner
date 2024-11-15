@@ -13,12 +13,15 @@ import { orderRouter } from './routes/api/order.js';
 import { userRouter } from './routes/api/user.js';
 import cookieParser from 'cookie-parser';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies to req.body
 app.use(express.json()); // Parse JSON bodies to req.body
-app.use(express.static('frontend/dist')); // Serve the Next.js frontend
+app.use(express.static('frontend/dist')); // Serve the React.js frontend
 
 app.use(cookieParser());
 
@@ -31,6 +34,13 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 });
 
+// Catch-all route to serve index.html in the /frontend/dist folder for React Router
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
+});
 
 app.listen(port, () => {
   debugIndex(`Example app listening on port http://localhost:${port}`);

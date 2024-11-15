@@ -4,11 +4,16 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import "./LoginForm.css";
 import axios from "axios";
 
+import { useNavigate } from "react-router-dom";
+
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     (() => {
       "use strict";
@@ -33,17 +38,21 @@ export default function LoginForm() {
     })();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    axios
-      .post("http://localhost:2024/api/users/login", { email, password })
-      .then((res) => {
-        setMessage(res.data.message);
-      })
-      .catch((err) => {
-        console.log(err.response.data);
-      });
+   
+    try{
+      let response = await axios.post(`http://localhost:2024/api/users/login`, { email, password }, { withCredentials: true });
+      console.log(import.meta.env.VITE_API_URL);
+      if(response.status === 200){
+        setMessage(response.data.message);
+        navigate('/');
+      }
+      
+      //setMessage(response.data.message);
+    }catch(e){
+      console.log(`Catch Block: ${e.response.data}`);
+    }
   };
 
   return (
@@ -80,7 +89,7 @@ export default function LoginForm() {
             aria-describedby="password-addon"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required minLength={5}
+            required minLength={5} 
           />
           <span className="input-group-text" onClick={() => setShowPassword(!showPassword)}>
             <i className={`input-icon bi ${showPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'}`}></i>

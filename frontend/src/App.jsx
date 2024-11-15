@@ -5,9 +5,10 @@ import axios from 'axios';
 import {PetOwnerList} from './components/PetOwnerList.jsx';
 import { PetOwnerForm } from './components/PetOwnerForm.jsx';
 import LoginForm from './components/LoginForm.jsx';
-import Header from './components/Header.jsx';
+import Navbar from './components/Navbar.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.js';
+import {Route,Routes} from 'react-router-dom';
 
 function App() {
   // const [petOwners, setPetOwners] = useState([]);
@@ -50,7 +51,21 @@ function App() {
 
   return (
     <>
-    <LoginForm />
+    <div className='container'>
+      <header>
+        <Navbar />
+      </header>
+      <main>
+      <Routes>
+        <Route path='/' element={<PetOwnerList />} />
+        <Route path='/login' element={<LoginForm />} />
+        <Route path='/pet-owners' element={<PetOwnerList />} />
+      </Routes>
+      </main>
+      <footer>
+        <p>&copy; 2024 Tail Runner</p>
+      </footer>
+    </div>
      {/* <PetOwnerList handleEdit={handleEdit} petOwners={petOwners} handleDelete={handleDelete} />
      <PetOwnerForm currentOwner={currentOwner} handleSave={handleSave} setRefresh={() => setRefresh(refresh+1)}/> */}
     </>

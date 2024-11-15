@@ -88,7 +88,11 @@ router.post('/login', validBody(userSchema), async (req, res) => {
       }
       const jwtToken = await issueAuthToken(existingUser);
       await issueAuthCookie(res, jwtToken);
-      res.status(200).json({message: 'User logged in successfully'});
+      res.status(200).json(
+        {
+          message: 'User logged in successfully',
+          role: existingUser.role
+        });
     }catch(e){
       debugUser(e);
       res.status(500).json({message: 'Error logging in user'});
