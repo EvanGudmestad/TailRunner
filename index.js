@@ -1,5 +1,5 @@
 import express from 'express';
-
+import cors from 'cors';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -22,6 +22,8 @@ const port = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies to req.body
 app.use(express.json()); // Parse JSON bodies to req.body
 app.use(express.static('frontend/dist')); // Serve the React.js frontend
+
+app.use(cors());
 
 app.use(cookieParser());
 

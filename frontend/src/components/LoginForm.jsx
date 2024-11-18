@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import "./LoginForm.css";
 import axios from "axios";
 
 import { useNavigate } from "react-router-dom";
 
-export default function LoginForm() {
+export default function LoginForm({showSuccess, showError, setAuth}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -45,8 +46,15 @@ export default function LoginForm() {
       let response = await axios.post(`http://localhost:2024/api/users/login`, { email, password }, { withCredentials: true });
       console.log(import.meta.env.VITE_API_URL);
       if(response.status === 200){
-        setMessage(response.data.message);
-        navigate('/');
+        if(response.data.message == 'Invalid email or password'){
+          setMessage(response.data.message);
+          showError(response.data.message);
+        }else{
+          setMessage(response.data.message);
+          showSuccess(response.data.message);
+          setAuth(response.data);
+          navigate('/');
+        }
       }
       
       //setMessage(response.data.message);

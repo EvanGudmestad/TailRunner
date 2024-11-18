@@ -9,8 +9,19 @@ import Navbar from './components/Navbar.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.js';
 import {Route,Routes} from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 function App() {
+
+  const [auth, setAuth] = useState(null);
+
+  function showSuccess(message) {
+    toast(message, { type: 'success', position: 'bottom-right' });
+  }
+
+  function showError(message) {
+    toast(message, { type: 'error', position: 'bottom-right' });
+  }
   // const [petOwners, setPetOwners] = useState([]);
   // const [refresh, setRefresh] = useState(0); // State variable to trigger refresh
   // const [currentOwner, setCurrentOwner] = useState(null)
@@ -52,14 +63,15 @@ function App() {
   return (
     <>
     <div className='container'>
+      <ToastContainer />
       <header>
-        <Navbar />
+        <Navbar auth={auth} />
       </header>
       <main>
       <Routes>
-        <Route path='/' element={<PetOwnerList />} />
+        <Route path='/' element={<LoginForm showSuccess={showSuccess} showError={showError} setAuth={setAuth}  />} />
         <Route path='/login' element={<LoginForm />} />
-        <Route path='/pet-owners' element={<PetOwnerList />} />
+        {/* <Route path='/pet-owners' element={<PetOwnerList />} /> */}
       </Routes>
       </main>
       <footer>

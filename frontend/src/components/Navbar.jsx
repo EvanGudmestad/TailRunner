@@ -1,4 +1,4 @@
-const Navbar = () => {
+const Navbar = ({auth}) => {
   return(
   <>
  <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -18,7 +18,18 @@ const Navbar = () => {
         <li className="nav-item">
           <a className="nav-link" href="#">Pricing</a>
         </li>
-       
+        {auth ? 
+        <>
+        <li>
+          <a className="nav-link" href="#">Welcome {auth.email}</a>
+        </li>
+        <li>
+          <a className="nav-link" href="#">Logout</a>
+        </li>
+        </> :
+          <li>
+          <a className="nav-link" href="#">Login</a>
+          </li>}
       </ul>
     </div>
   </div>
