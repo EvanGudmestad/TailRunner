@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 export default function LoginForm({showSuccess, showError, setAuth}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  //const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
@@ -47,12 +47,13 @@ export default function LoginForm({showSuccess, showError, setAuth}) {
       console.log(import.meta.env.VITE_API_URL);
       if(response.status === 200){
         if(response.data.message == 'Invalid email or password'){
-          setMessage(response.data.message);
+         //setMessage(response.data.message);
           showError(response.data.message);
         }else{
-          setMessage(response.data.message);
+          //setMessage(response.data.message);
           showSuccess(response.data.message);
           setAuth(response.data);
+          localStorage.setItem('auth', JSON.stringify(response.data)); //Save auth to local storage
           navigate('/');
         }
       }
@@ -108,7 +109,7 @@ export default function LoginForm({showSuccess, showError, setAuth}) {
         </div>
       </div>
       <button type="submit" className="btn btn-primary">Submit</button>
-      <h2>{message}</h2>
+     
     </form>
     </div>
     </div>

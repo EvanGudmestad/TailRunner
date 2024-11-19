@@ -8,12 +8,14 @@ import LoginForm from './components/LoginForm.jsx';
 import Navbar from './components/Navbar.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.js';
-import {Route,Routes} from 'react-router-dom';
+import RegisterUserForm from './components/RegisterUserForm.jsx';
+import {Route,Routes, useNavigate} from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
 function App() {
 
   const [auth, setAuth] = useState(null);
+  const navigate = useNavigate();
 
   function showSuccess(message) {
     toast(message, { type: 'success', position: 'bottom-right' });
@@ -22,6 +24,20 @@ function App() {
   function showError(message) {
     toast(message, { type: 'error', position: 'bottom-right' });
   }
+
+  function onLogout() {
+    setAuth(null);
+    navigate('/');
+    showSuccess('Logged out!');
+    localStorage.removeItem('auth');
+  }
+
+  useEffect(() => {
+    const auth = JSON.parse(localStorage.getItem('auth'));
+    if(auth){
+      setAuth(auth);
+    }
+  },[]);
   // const [petOwners, setPetOwners] = useState([]);
   // const [refresh, setRefresh] = useState(0); // State variable to trigger refresh
   // const [currentOwner, setCurrentOwner] = useState(null)
@@ -65,12 +81,13 @@ function App() {
     <div className='container'>
       <ToastContainer />
       <header>
-        <Navbar auth={auth} />
+        <Navbar auth={auth} onLogout={onLogout}/>
       </header>
       <main>
       <Routes>
         <Route path='/' element={<LoginForm showSuccess={showSuccess} showError={showError} setAuth={setAuth}  />} />
-        <Route path='/login' element={<LoginForm />} />
+        <Route path='/login' element={<LoginForm showSuccess={showSuccess} showError={showError} setAuth={setAuth}  />} />
+        <Route path='/register' element={<RegisterUserForm showSuccess={showSuccess} showError={showError} setAuth={setAuth} />} />
         {/* <Route path='/pet-owners' element={<PetOwnerList />} /> */}
       </Routes>
       </main>

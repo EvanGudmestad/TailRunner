@@ -1,4 +1,11 @@
-const Navbar = ({auth}) => {
+import { NavLink } from "react-router-dom";
+
+const Navbar = ({auth, onLogout}) => {
+
+  const onClickLogout = (evt) => {
+    evt.preventDefault();
+    onLogout();
+  }
   return(
   <>
  <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -16,20 +23,27 @@ const Navbar = ({auth}) => {
           <a className="nav-link" href="#">Features</a>
         </li>
         <li className="nav-item">
-          <a className="nav-link" href="#">Pricing</a>
+          <a className="nav-link" href="pricing.html">Pricing</a>
         </li>
         {auth ? 
         <>
         <li>
           <a className="nav-link" href="#">Welcome {auth.email}</a>
         </li>
-        <li>
-          <a className="nav-link" href="#">Logout</a>
+        <li className="nav-item">
+          <button className="nav-link" onClick={(evt) => onClickLogout(evt)}>Logout</button>
         </li>
         </> :
-          <li>
-          <a className="nav-link" href="#">Login</a>
-          </li>}
+        <>
+          <li className="nav-item">
+            <NavLink to="/login" className='nav-link'>Login</NavLink>
+          </li>
+          <li className="nav-item">
+          <NavLink to="/register" className='nav-link'>Register</NavLink>
+        </li>
+        </>
+          }
+          
       </ul>
     </div>
   </div>

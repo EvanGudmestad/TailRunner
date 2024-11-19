@@ -66,7 +66,7 @@ router.post('/register', validBody(userSchema),async (req, res) => {
 
     //Create Auth Cookie
     await issueAuthCookie(res, jwtToken);
-    res.status(201).json({message: 'User registered successfully'});
+    res.status(201).json({message: 'User registered successfully', role: user.role, email: user.email});
   }else{
     res.status(500).json({message: 'Error registering user'});
   }
