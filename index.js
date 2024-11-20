@@ -40,9 +40,7 @@ app.get('/', (req, res) => {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
-});
+
 
 app.listen(port, () => {
   debugIndex(`Example app listening on port http://localhost:${port}`);
@@ -51,6 +49,10 @@ app.listen(port, () => {
 app.use('/api/pet-owners', dogOwnerRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/users', userRouter);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
+});
 
 //handle server exceptions to keep my server from crashing
 app.use((err, req, res, next) => {

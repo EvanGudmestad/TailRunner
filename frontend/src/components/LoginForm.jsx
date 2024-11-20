@@ -37,7 +37,7 @@ export default function LoginForm({showSuccess, showError, setAuth}) {
         );
       });
     })();
-  }, []);
+  }, []); // Run only once when the component loads
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,7 +54,7 @@ export default function LoginForm({showSuccess, showError, setAuth}) {
           showSuccess(response.data.message);
           setAuth(response.data);
           localStorage.setItem('auth', JSON.stringify(response.data)); //Save auth to local storage
-          navigate('/');
+          navigate('/pet-owners');
         }
       }
       

@@ -88,7 +88,7 @@ function App() {
         <Route path='/' element={<LoginForm showSuccess={showSuccess} showError={showError} setAuth={setAuth}  />} />
         <Route path='/login' element={<LoginForm showSuccess={showSuccess} showError={showError} setAuth={setAuth}  />} />
         <Route path='/register' element={<RegisterUserForm showSuccess={showSuccess} showError={showError} setAuth={setAuth} />} />
-        {/* <Route path='/pet-owners' element={<PetOwnerList />} /> */}
+        <Route path='/pet-owners' element={<PetOwnerList showSuccess={showSuccess}/>} />
       </Routes>
       </main>
       <footer>

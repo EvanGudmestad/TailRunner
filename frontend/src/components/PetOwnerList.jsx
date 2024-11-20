@@ -1,70 +1,51 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import pencil from '../../node_modules/bootstrap-icons/icons/pencil.svg';
-import trash from '../../node_modules/bootstrap-icons/icons/trash.svg';
+import PetOwnerItem from './PetOwnerItem.jsx';
 
 
-const PetOwnerList = ({handleEdit, petOwners, handleDelete}) =>{ 
-  const [showModal, setShowModal] = useState(false);
+
+const PetOwnerList = ({showSuccess}) =>{ 
   const [selectedOwner, setSelectedOwner] = useState(null);
+  const [petOwners, setPetOwners] = useState([]);
+  const [deleteCounter, setDeleteCounter] = useState(0);
 
-  const handleShowModal = (owner) => {
-    setSelectedOwner(owner);
-    setShowModal(true);
-  };
+  useEffect(() => {
+   
+    const fetchPetOwners = async () => {
+      try{
+        const {data} = await axios.get(`${import.meta.env.VITE_API_URL}/api/pet-owners`, { withCredentials: true });
+        setPetOwners(data);
+        console.log('Fetching Pet Owners...')
+      }catch(error){
+        console.log(error);
+      }
+    };
+    fetchPetOwners();
+  }, [deleteCounter]);
 
-  const handleConfirmDelete = () => {
-    handleDelete(selectedOwner._id);
-    setShowModal(false);
-  };
+  function handleConfirmDelete(evt, petOwnerId){
+    evt.preventDefault();
+    try{
+     const data = axios.delete(`${import.meta.env.VITE_API_URL}/api/pet-owners/${petOwnerId}`, { withCredentials: true });
+     //showSuccess(`Deleted Pet Owner`);
+     setDeleteCounter(deleteCounter + 1);
+     //navigate('/pet-owners');
+    }catch(error){
+      console.log(error);
+    }
+  }
+  
+ 
     return (
         <div className="container">
             <h1>Pet Owners</h1>
             <hr />
             <div className="row">
               {petOwners.map((petOwner) => (
-                <div className="col-md-4" key={petOwner._id}>
-                  <div className="card mb-4">
-                    <div className="card-body">
-                      <h5 className="card-title">{petOwner.firstName} {petOwner.lastName}</h5>
-                      <h6 className="card-subtitle mb-2 text-muted">Dogs</h6>
-                      <div className="d-flex flex-wrap">
-                        {petOwner.dogs.map((dog) => (
-                          <span className="badge bg-secondary me-1" key={dog}>{dog}</span>
-                        ))}
-                      </div>
-                      <div className="mt-3">
-                        <button className="btn btn-primary me-2" onClick={() => handleEdit(petOwner)}>
-                          <img src={pencil} alt="Edit" /> Edit
-                        </button>
-                        <button className="btn btn-danger" onClick={() => handleShowModal(petOwner)}>
-                          <img src={trash} alt="Delete" /> Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <PetOwnerItem petOwner={petOwner} key={petOwner._id} handleConfirmDelete={handleConfirmDelete}  />
               ))}
             </div>
-            {showModal && (
-        <div className="modal show d-block" tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Confirm Delete</h5>
-                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
-              </div>
-              <div className="modal-body">
-                <p>Are you sure you want to delete {selectedOwner.firstName} {selectedOwner.lastName}?</p>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
-                <button type="button" className="btn btn-danger" onClick={handleConfirmDelete}>Delete</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+            
         </div>
     )
 };

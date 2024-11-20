@@ -11,11 +11,10 @@ const debugDogOwner = debug('app:DogOwner');
 const router = express.Router();
 
 //Get all Pet Owners
-router.get('',hasPermission('canViewData'), hasPermission('canBlaBla'), (req, res) => {
+router.get('',hasPermission('canViewData'),(req, res) => {
+  //TO DO: Add Back end Search Interface Functionality
+  
   GetAllPetOwners().then((owners)=>{
-    if(req.auth){
-      debugDogOwner(req.auth.email);
-    }
     res.status(200).json(owners);
   }).catch((error)=>{
     res.status(500).send(error);
