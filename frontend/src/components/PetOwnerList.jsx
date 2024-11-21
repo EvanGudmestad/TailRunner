@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import PetOwnerItem from './PetOwnerItem.jsx';
+import { NavLink } from 'react-router-dom';
 
 
 
@@ -39,6 +40,7 @@ const PetOwnerList = ({showSuccess}) =>{
     return (
         <div className="container">
             <h1>Pet Owners</h1>
+            <NavLink to="/pet-owners/new" className="btn btn-primary">Add Pet Owner</NavLink>
             <hr />
             <div className="row">
               {petOwners.map((petOwner) => (

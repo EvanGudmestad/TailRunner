@@ -100,6 +100,12 @@ router.post('/login', validBody(userSchema), async (req, res) => {
     }
 });
 
+router.post('/logout', (req, res) => {
+
+  res.clearCookie('authToken');
+  res.status(200).json({message: 'User logged out successfully'});
+});
+
 //To DO: Implement Change Password Route
 
 

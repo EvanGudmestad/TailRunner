@@ -6,6 +6,7 @@ import {PetOwnerList} from './components/PetOwnerList.jsx';
 import { PetOwnerForm } from './components/PetOwnerForm.jsx';
 import LoginForm from './components/LoginForm.jsx';
 import Navbar from './components/Navbar.jsx';
+import AddEditPetOwner from './components/AddEditPetOwner.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.js';
 import RegisterUserForm from './components/RegisterUserForm.jsx';
@@ -27,8 +28,16 @@ function App() {
 
   function onLogout() {
     setAuth(null);
-    navigate('/');
-    showSuccess('Logged out!');
+   // navigate('/');
+   
+    //document.cookie = 'authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=http://localhost:2024/';
+    axios.post('/api/users/logout',{},{withCredentials:true}).then(response => {
+      console.log(response.data);
+      navigate('/');
+      showSuccess('Logged out!');
+    }).catch(error => {
+      console.log(error);
+    });
     localStorage.removeItem('auth');
   }
 
@@ -38,43 +47,7 @@ function App() {
       setAuth(auth);
     }
   },[]);
-  // const [petOwners, setPetOwners] = useState([]);
-  // const [refresh, setRefresh] = useState(0); // State variable to trigger refresh
-  // const [currentOwner, setCurrentOwner] = useState(null)
-  
-   
-  // const handleDelete = async (id) => {
-  //   try{
-  //     await axios.delete(`http://localhost:2024/api/pet-owners/${id}`);
-  //     setRefresh(refresh + 1); // Trigger refresh after deletion
-  //   }catch(error){
-  //     console.log(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const fetchPetOwners = async () => {
-  //     try{
-  //     const {data} = await axios.get('http://localhost:2024/api/pet-owners');
-  //     console.log(data);
-  //     setPetOwners(data);
-  //     }catch(error){
-  //       console.log(error);
-  //     }
-  //   };
-  //   fetchPetOwners();
-  // }, [refresh]);
-
  
-
-  // const handleEdit = (owner) => {
-  //   setCurrentOwner(owner)
-  // };
-
-  // const handleSave = () => {
-  //   setRefresh(refresh+1);
-  //   setCurrentOwner(null)
-  // };
 
   return (
     <>
@@ -89,6 +62,8 @@ function App() {
         <Route path='/login' element={<LoginForm showSuccess={showSuccess} showError={showError} setAuth={setAuth}  />} />
         <Route path='/register' element={<RegisterUserForm showSuccess={showSuccess} showError={showError} setAuth={setAuth} />} />
         <Route path='/pet-owners' element={<PetOwnerList showSuccess={showSuccess}/>} />
+        <Route path='/pet-owners/new' element={<AddEditPetOwner />} />
+        <Route path='/pet-owners/:petOwnerId' element={<AddEditPetOwner />} />
       </Routes>
       </main>
       <footer>

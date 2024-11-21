@@ -21,11 +21,11 @@ router.get('',hasPermission('canViewData'),(req, res) => {
 })});
 
 //Get Pet Owner by ID
-router.get('/:id',async (req, res) => {
- const id = req.params.id;
+router.get('/:id', validId('id'),async (req, res) => {
+ const id = req.id;
   try{
     const owner = await GetPetOwnerById(id);
-    debugDogOwner(JSON.stringify(owner));
+    //debugDogOwner(JSON.stringify(owner));
     if(JSON.stringify(owner) === '{}' || owner === null){
       res.status(404).send('Owner not found');
     }else{

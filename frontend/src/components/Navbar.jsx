@@ -17,18 +17,15 @@ const Navbar = ({auth, onLogout}) => {
     <div className="collapse navbar-collapse" id="navbarNav">
       <ul className="navbar-nav">
         <li className="nav-item">
-          <a className="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" href="#">Features</a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" href="pricing.html">Pricing</a>
+          <NavLink className="nav-link active" aria-current="page" to="/">Home</NavLink>
         </li>
         {auth ? 
         <>
-        <li>
-          <a className="nav-link" href="#">Welcome {auth.email}</a>
+         <li className="nav-item">
+          <NavLink className="nav-link" to="/pet-owners">Registered Pet Owners</NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink className="nav-link" to="/me">Welcome {auth.email}</NavLink>
         </li>
         <li className="nav-item">
           <button className="nav-link" onClick={(evt) => onClickLogout(evt)}>Logout</button>

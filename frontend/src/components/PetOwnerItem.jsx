@@ -2,7 +2,7 @@ import pencil from '../../node_modules/bootstrap-icons/icons/pencil.svg';
 import trash from '../../node_modules/bootstrap-icons/icons/trash.svg';
 import { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 
 export default function PetOwnerItem({petOwner, handleConfirmDelete}){
@@ -24,9 +24,12 @@ export default function PetOwnerItem({petOwner, handleConfirmDelete}){
                         ))}
                       </div>
                       <div className="mt-3">
-                        <button className="btn btn-primary me-2">
+                        {/* <NavLink className="btn btn-primary me-2">
                           <img src={pencil} alt="Edit" /> Edit
-                        </button>
+                        </Nav> */}
+                        <NavLink to={`/pet-owners/${petOwner._id}`} className="btn btn-primary me-2">
+                          <img src={pencil} alt="edit" /> Edit
+                        </NavLink>
                         <button className="btn btn-danger" onClick={() => setShowModal(true)}>
                           <img src={trash} alt="Delete" /> Delete
                         </button>
