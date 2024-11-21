@@ -15,16 +15,17 @@ const Navbar = ({auth, onLogout}) => {
       <span className="navbar-toggler-icon"></span>
     </button>
     <div className="collapse navbar-collapse" id="navbarNav">
-      <ul className="navbar-nav">
-        <li className="nav-item">
-          <NavLink className="nav-link active" aria-current="page" to="/">Home</NavLink>
-        </li>
+      <ul className="navbar-nav w-100">
+       
         {auth ? 
         <>
          <li className="nav-item">
+          <NavLink className="nav-link active" aria-current="page" to="/">Home</NavLink>
+        </li>
+         <li className="nav-item">
           <NavLink className="nav-link" to="/pet-owners">Registered Pet Owners</NavLink>
         </li>
-        <li className="nav-item">
+        <li className="nav-item ms-lg-auto">
           <NavLink className="nav-link" to="/me">Welcome {auth.email}</NavLink>
         </li>
         <li className="nav-item">
