@@ -44,6 +44,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/register', validBody(userSchema),async (req, res) => {
+  debugUser(`Route Hit`);
   const user = req.body;
   let existingUser = null;
   try{

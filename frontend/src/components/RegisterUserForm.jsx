@@ -12,18 +12,24 @@ export default function RegisterUserForm({showSuccess,showError,setAuth}) {
   const handleSubmit = async (evt) => {
     evt.preventDefault();
     
-
+  
     try{
-        const response = await axios.post('http://localhost:2024/api/users/register',{email,password}, {withCredentials: true});
+        const response = await axios.post('http://localhost:2024/api/users/register',{email, password}, {withCredentials: true});
+  
         showSuccess('User registered successfully');
         navigate('/'); // Redirect to home page
         localStorage.setItem('auth', JSON.stringify(response.data)); //Save auth to local storage
         setAuth(response.data);
     }catch(err){
       console.log(err);
-      showError('Error registering user');
+      if(err.response.data.errors){
+        err.response.data.errors.forEach(error => {
+          showError(error.message);
+        });
+      //showError('Error registering user');
     }
   }
+}
 
 
   return(
