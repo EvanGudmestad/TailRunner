@@ -3,12 +3,21 @@ import { GetAllPetOwners, GetPetOwnerById, addPetOwner, updatePetOwner, deletePe
 import { validId } from '../../middleware/validId.js';
 
 import { isLoggedIn, hasPermission } from '@merlin4/express-auth';
-
+import Joi from 'joi';
+import { validBody } from '../../middleware/validBody.js';
 import debug from 'debug';
 
 const debugDogOwner = debug('app:DogOwner');
 
 const router = express.Router();
+
+
+const updatePetOwnerSchema = Joi.object({
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
+  dogs: Joi.array().items(Joi.string().allow('')).required(),
+  _id: Joi.string().required()
+});
 
 //Get all Pet Owners
 router.get('',hasPermission('canViewData'),(req, res) => {
@@ -59,19 +68,20 @@ router.post('', isLoggedIn(), async (req,res)=>{
 });
 
 //Update Pet Owner
-router.patch('/:id', validId('id'), async (req,res)=>{
+router.patch('/:id', validId('id'), validBody(updatePetOwnerSchema), hasPermission('canEditPetOwners'), async (req,res)=>{
+  debugDogOwner(`The req.body is ${JSON.stringify(req.body)}`);
   const id = req.id;
   //debugDogOwner(id);
   //debugDogOwner(JSON.stringify(req.body));
   //Get the Current owner out of the DB
   const currentOwner = await GetPetOwnerById(id);
-  debugDogOwner(JSON.stringify(currentOwner));
+  //debugDogOwner(JSON.stringify(currentOwner));
   currentOwner.dogs = [];
   if(JSON.stringify(currentOwner) === '{}' || currentOwner === null){
     res.status(404).send('Owner not found');
   }else{
     const updatedOwner = req.body;
-    //debugDogOwner(JSON.stringify(updatedOwner));
+   // debugDogOwner(JSON.stringify(`Updated Owner Object: ${updatedOwner}`));
     if(updatedOwner.dogs){
       //if dogs is an array
       if(Array.isArray(updatedOwner.dogs)){

@@ -63,7 +63,7 @@ function App() {
         <Route path='/register' element={<RegisterUserForm showSuccess={showSuccess} showError={showError} setAuth={setAuth} />} />
         <Route path='/pet-owners' element={<PetOwnerList showSuccess={showSuccess}/>} />
         <Route path='/pet-owners/new' element={<AddEditPetOwner />} />
-        <Route path='/pet-owners/:petOwnerId' element={<AddEditPetOwner />} />
+        <Route path='/pet-owners/:petOwnerId' element={<AddEditPetOwner showError={showError} />} />
       </Routes>
       </main>
       <footer>

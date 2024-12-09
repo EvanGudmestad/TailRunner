@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 
-export default function AddEditPetOwner() {
+export default function AddEditPetOwner({showError}) {
 
 
   const [petOwner, setPetOwner] = useState({firstName: '', lastName: '', dogs: ['','','']}); 
@@ -49,8 +49,18 @@ export default function AddEditPetOwner() {
     evt.preventDefault();
     try{
       if(petOwner._id){
-        await axios.patch(`${import.meta.env.VITE_API_URL}/api/pet-owners/${petOwner._id}`, petOwner, {withCredentials:true});
+        try{
+         // console.log(`Pet Owner ID: ${JSON.stringify(petOwner)}`);
+          const axiosResult = await axios.patch(`${import.meta.env.VITE_API_URL}/api/pet-owners/${petOwner._id}`, petOwner, {withCredentials:true});
+          console.log(`Axios Result ${axiosResult.data}`);
+
         navigate('/pet-owners');
+        }catch(error){
+          //console.log(`The Error is ${error}`);
+          if(error.response.status === 403){
+            showError(`You do not have permission to edit this record`);
+          }
+        }
       }else{
         const axiosResult = await axios.post('http://localhost:2024/api/pet-owners', petOwner,{withCredentials:true});
         if(axiosResult.data.message){

@@ -15,14 +15,20 @@ export default function RegisterUserForm({showSuccess,showError,setAuth}) {
   
     try{
         const response = await axios.post('http://localhost:2024/api/users/register',{email, password}, {withCredentials: true});
-  
+
         showSuccess('User registered successfully');
         navigate('/'); // Redirect to home page
         localStorage.setItem('auth', JSON.stringify(response.data)); //Save auth to local storage
         setAuth(response.data);
     }catch(err){
-      console.log(err);
-      if(err.response.data.errors){
+      //console.log('Error registering user');
+     // console.log(err.response.data.error);   
+      
+    //  if(err.response.data.error){
+    //   //403 Forbidden from middleware on the backend
+    //  }
+     
+     if(err.response.data.errors){
         err.response.data.errors.forEach(error => {
           showError(error.message);
         });
