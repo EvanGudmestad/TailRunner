@@ -23,9 +23,9 @@ async function ping(){
   debugDb(`Ping:, ${JSON.stringify(pong)}`);
 }
 
-async function GetAllPetOwners(){
+async function GetAllPetOwners(pipeline){
   const db = await connectToDatabase();
-  return await db.collection('PetOwners').find({}).toArray();
+  return await db.collection('PetOwners').aggregate(pipeline).toArray();  
 }
 
 async function GetPetOwnerById(id){

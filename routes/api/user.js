@@ -93,7 +93,8 @@ router.post('/login', validBody(userSchema), async (req, res) => {
         {
           message: 'User logged in successfully',
           role: existingUser.role,
-          email: existingUser.email
+          email: existingUser.email,
+          token: jwtToken
         });
     }catch(e){
       debugUser(e);

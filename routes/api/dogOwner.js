@@ -18,16 +18,58 @@ const updatePetOwnerSchema = Joi.object({
   dogs: Joi.array().items(Joi.string().allow('')).required(),
   _id: Joi.string().required()
 });
-
 //Get all Pet Owners
-router.get('',hasPermission('canViewData'),(req, res) => {
-  //TO DO: Add Back end Search Interface Functionality
-  
-  GetAllPetOwners().then((owners)=>{
+router.get('',hasPermission('canViewData'),async (req, res) => {
+ 
+  let match = {};
+
+  let {keywords, classification, sortBy, active} = req.query;
+
+  debugDogOwner(`Keywords are ${keywords}`);
+
+  if(keywords){
+    match.$text = {$search: keywords};
+  }
+
+  if(classification){
+    match.classification = {$eq: classification};
+  }
+
+  if(active == 'true'){
+    match.active = {$eq: true};
+  }else if(active == 'false'){
+    match.active = {$eq: false};
+  }
+
+  let sort = {lastName: 1};
+
+  switch(sortBy){
+    case 'firstName':
+      sort = {firstName: 1};
+      break;
+    case 'lastName':
+      sort = {lastName: 1};
+      break;
+    case 'classification':
+      sort = {classification: 1};
+      break;
+    default:
+      sort = {lastName: 1};
+  }
+
+  const pipeline = [
+    {$match: match},
+    {$sort: sort}
+  ];
+
+  try{
+    const owners = await GetAllPetOwners(pipeline);
     res.status(200).json(owners);
-  }).catch((error)=>{
-    res.status(500).send(error);
-})});
+  }catch(error){
+    debugDogOwner(error);
+  };
+
+});
 
 //Get Pet Owner by ID
 router.get('/:id', validId('id'),async (req, res) => {
