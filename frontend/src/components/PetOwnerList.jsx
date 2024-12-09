@@ -12,6 +12,7 @@ const PetOwnerList = ({showSuccess, auth}) =>{
   const [keywords, setKeywords] = useState('');
   const [classificationFilter, setClassificationFilter] = useState('');
   const [sortBy, setSortBy] = useState('lastName');
+  const [showActive, setShowActive] = useState('');
 
   useEffect(() => {
    
@@ -46,7 +47,7 @@ const PetOwnerList = ({showSuccess, auth}) =>{
     try{
       const {data} = await axios.get(`${import.meta.env.VITE_API_URL}/api/pet-owners/`, {
         headers: {authorization: `Bearer ${auth?.token}`},
-        params: {keywords:keywords, classification:classificationFilter, sortBy:sortBy}}
+        params: {keywords:keywords, classification:classificationFilter, sortBy:sortBy, active:showActive}}
       );
       console.log(data);
       setPetOwners(data);
@@ -88,10 +89,10 @@ const PetOwnerList = ({showSuccess, auth}) =>{
                     <option value='classification'>Classification</option>
                   </select>
                   </div>
-                  {/* <div className='col-4'>
+                  <div className='col-4'>
                     <label className='form-check-label'>Show Active Accounts:</label>
-                    <input type='checkbox' className='form-check-input' id='showActive' />
-                  </div> */}
+                    <input type='checkbox' className='form-check-input' id='showActive' onChange={(evt) => setShowActive(evt.target.checked ? 'true' : 'false')} />
+                  </div> 
               </div>
             </form>
             <div className="row">
