@@ -5,7 +5,7 @@ import axios from 'axios';
 import { NavLink } from 'react-router-dom';
 
 
-export default function PetOwnerItem({petOwner, handleConfirmDelete}){
+export default function PetOwnerItem({petOwner, handleConfirmDelete, auth}){
   
   const [showModal, setShowModal] = useState(false);
  // const navigate = useNavigate();
@@ -24,15 +24,16 @@ export default function PetOwnerItem({petOwner, handleConfirmDelete}){
                         ))}
                       </div>
                       <div className="mt-3">
-                        {/* <NavLink className="btn btn-primary me-2">
-                          <img src={pencil} alt="Edit" /> Edit
-                        </Nav> */}
+                        {auth?.role?.includes('admin') && (
+                          <>
                         <NavLink to={`/pet-owners/${petOwner._id}`} className="btn btn-primary me-2">
                           <img src={pencil} alt="edit" /> Edit
                         </NavLink>
                         <button className="btn btn-danger" onClick={() => setShowModal(true)}>
                           <img src={trash} alt="Delete" /> Delete
                         </button>
+                        </>
+                        )}
                       </div>
                     </div>
                   </div>

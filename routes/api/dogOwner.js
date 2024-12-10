@@ -23,9 +23,9 @@ router.get('',hasPermission('canViewData'),async (req, res) => {
  
   let match = {};
 
-  let {keywords, classification, sortBy, active} = req.query;
+  let {keywords, classification, sortBy, active, minAge, maxAge} = req.query;
 
-  debugDogOwner(`Keywords are ${keywords}`);
+ // debugDogOwner(`Keywords are ${keywords}`);
 
   if(keywords){
     match.$text = {$search: keywords};
@@ -33,6 +33,28 @@ router.get('',hasPermission('canViewData'),async (req, res) => {
 
   if(classification){
     match.classification = {$eq: classification};
+  }
+
+  
+  const today = new Date(); // Get current date and time
+  today.setHours(0);
+  today.setMinutes(0);
+  today.setSeconds(0);
+  today.setMilliseconds(0); // Remove time from Date
+
+  const pastMaximumDaysOld = new Date(today);
+  pastMaximumDaysOld.setDate(pastMaximumDaysOld.getDate() - maxAge); // Set pastMaximumDaysOld to today minus maxAge
+
+  const pastMinimumDaysOld = new Date(today);
+  pastMinimumDaysOld.setDate(pastMinimumDaysOld.getDate() - minAge); // Set pastMinimumDaysOld to today minus minAge
+
+  
+  if(maxAge && minAge){
+    match.createdOn = {$lte:pastMinimumDaysOld, $gte:pastMaximumDaysOld};
+  } else if(minAge){
+    match.createdOn = {$lte:pastMinimumDaysOld};
+  } else if(maxAge) {
+    match.createdOn = {$gte:pastMaximumDaysOld};
   }
 
   if(active == 'true'){
@@ -94,6 +116,7 @@ router.post('', isLoggedIn(), async (req,res)=>{
   }
   else{
     try{
+      owner.createdOn = new Date();
       const result = await addPetOwner(owner);
       const log = {
         timestamp: new Date(),

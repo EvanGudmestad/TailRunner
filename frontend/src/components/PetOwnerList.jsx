@@ -13,6 +13,8 @@ const PetOwnerList = ({showSuccess, auth}) =>{
   const [classificationFilter, setClassificationFilter] = useState('');
   const [sortBy, setSortBy] = useState('lastName');
   const [showActive, setShowActive] = useState('');
+  const [maxAge, setMaxAge] = useState('');
+  const [minAge, setMinAge] = useState('');
 
   useEffect(() => {
    
@@ -47,7 +49,7 @@ const PetOwnerList = ({showSuccess, auth}) =>{
     try{
       const {data} = await axios.get(`${import.meta.env.VITE_API_URL}/api/pet-owners/`, {
         headers: {authorization: `Bearer ${auth?.token}`},
-        params: {keywords:keywords, classification:classificationFilter, sortBy:sortBy, active:showActive}}
+        params: {keywords:keywords, classification:classificationFilter, sortBy:sortBy, active:showActive, minAge:minAge, maxAge:maxAge}}
       );
       console.log(data);
       setPetOwners(data);
@@ -59,7 +61,7 @@ const PetOwnerList = ({showSuccess, auth}) =>{
  
     return (
         <div className="container">
-            <h1>Pet Owners</h1>
+            <h1>Pet Owners </h1>
             <NavLink to="/pet-owners/new" className="btn btn-primary">Add Pet Owner</NavLink>
             <hr />
             <form>
@@ -94,10 +96,20 @@ const PetOwnerList = ({showSuccess, auth}) =>{
                     <input type='checkbox' className='form-check-input' id='showActive' onChange={(evt) => setShowActive(evt.target.checked ? 'true' : 'false')} />
                   </div> 
               </div>
+              <div className='row mb-4'>
+              <div className='col'>
+                <label htmlFor="txtMinAge" className='form-label'>Minimum Age</label>
+                <input type="number" name="txtMinAge" id="txtMinAge" className='form-control' onChange={(evt) => setMinAge(evt.target.value)} />
+              </div>
+              <div className='col'>
+                <label htmlFor="txtMaxAge" className='form-label'>Maximum Age</label>
+                <input type="number" name="txtMaxAge" id="txtMaxAge" className='form-control' onChange={(evt) => setMaxAge(evt.target.value)} />
+              </div>
+              </div>
             </form>
             <div className="row">
               {petOwners.map((petOwner) => (
-                <PetOwnerItem petOwner={petOwner} key={petOwner._id} handleConfirmDelete={handleConfirmDelete}  />
+                <PetOwnerItem petOwner={petOwner} key={petOwner._id} handleConfirmDelete={handleConfirmDelete} auth={auth}  />
               ))}
             </div>
             

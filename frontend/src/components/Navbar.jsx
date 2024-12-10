@@ -28,6 +28,14 @@ const Navbar = ({auth, onLogout}) => {
         <li className="nav-item ms-lg-auto">
           <NavLink className="nav-link" to="/me">Welcome {auth.email}</NavLink>
         </li>
+        <li className="nav-item ms-lg-auto">
+        <NavLink className="nav-link" to="/me">
+          {auth?.role?.map((role, index) => (
+            <span key={index}>{role}</span>
+          ))}
+      </NavLink>
+          
+        </li>
         <li className="nav-item">
           <button className="nav-link" onClick={(evt) => onClickLogout(evt)}>Logout</button>
         </li>
